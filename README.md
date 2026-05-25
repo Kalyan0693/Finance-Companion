@@ -2,7 +2,7 @@
 # Product Requirements Document (PRD): Multi-Tier Finance Tracker
 
 ## 1. Executive Summary
-**Product Name:** Finance Companion
+**Product Name:** SyncWealth
 **Document Owner:** Product Manager
 **Current Status:** Ideation / MVP Definition
 
