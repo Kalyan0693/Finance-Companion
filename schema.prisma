@@ -1,0 +1,113 @@
+// schema.prisma
+// This schema defines the data models for the SyncWealth multi-tier finance tracker.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String             @id @default(uuid())
+  email            String             @unique
+  name             String
+  createdAt        DateTime           @default(now())
+  
+  // Relationships
+  groups           GroupMember[]
+  transactions     Transaction[]
+  recurringItems   RecurringItem[]
+}
+
+model Group {
+  id               String             @id @default(uuid())
+  name             String             // e.g., "Household", "Partner Shared"
+  type             GroupType          // INDIVIDUAL, PARTNER, FAMILY
+  createdAt        DateTime           @default(now())
+  
+  // Relationships
+  members          GroupMember[]
+  transactions     Transaction[]
+  buckets          Bucket[]
+}
+
+model GroupMember {
+  userId           String
+  groupId          String
+  role             Role               // ADMIN, MEMBER
+  user             User               @relation(fields: [userId], references: [id])
+  group            Group              @relation(fields: [groupId], references: [id])
+
+  @@id([userId, groupId])
+}
+
+model Bucket {
+  id               String             @id @default(uuid())
+  name             String             // e.g., "Groceries", "Child Education", "Cricket Match"
+  groupId          String             // Buckets belong to a specific workspace/group
+  group            Group              @relation(fields: [groupId], references: [id])
+  transactions     Transaction[]
+}
+
+model Transaction {
+  id               String             @id @default(uuid())
+  amount           Decimal
+  date             DateTime           @default(now())
+  notes            String?
+  
+  // Link to the user who made the transaction
+  userId           String
+  user             User               @relation(fields: [userId], references: [id])
+  
+  // Link to the workspace/group it belongs to
+  groupId          String
+  group            Group              @relation(fields: [groupId], references: [id])
+  
+  // Link to the specific category
+  bucketId         String
+  bucket           Bucket             @relation(fields: [bucketId], references: [id])
+}
+
+// Crucial for Net Worth Accuracy: Tracks ongoing EMIs and dynamic SIPs
+model RecurringItem {
+  id               String             @id @default(uuid())
+  type             RecurringType      // EMI, SIP_INVESTMENT
+  name             String             // e.g., "Home Loan", "Mutual Fund Step-Up"
+  baseAmount       Decimal            // Starting amount
+  frequency        Frequency          // MONTHLY, ANNUALLY
+  
+  // Logic for annual step-ups (e.g., increasing SIPs by 2000/yr)
+  stepUpAmount     Decimal?           
+  stepUpFrequency  Frequency?         
+  
+  // To calculate remaining liabilities against Net Worth
+  totalDurationMos Int?               // Total months of the EMI/SIP
+  monthsCompleted  Int                @default(0)
+  
+  userId           String
+  user             User               @relation(fields: [userId], references: [id])
+}
+
+enum GroupType {
+  INDIVIDUAL
+  PARTNER
+  FAMILY
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum RecurringType {
+  EMI
+  SIP_INVESTMENT
+}
+
+enum Frequency {
+  MONTHLY
+  ANNUALLY
+}
