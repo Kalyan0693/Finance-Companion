@@ -44,7 +44,7 @@ function Landing() {
               Personal & shared finances, in one ledger
             </div>
             <h1 className="mt-6 font-display text-5xl leading-tight text-foreground md:text-6xl">
-              The quiet way to <em className="text-primary-deep">track every</em> dollar.
+              The quiet way to <em className="text-primary-deep">track every</em> rupee.
             </h1>
             <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
               Bucket your spending, schedule what repeats, share with the household. No spreadsheets, no noise — just clean numbers and clean lines.
@@ -66,7 +66,7 @@ function Landing() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-xs uppercase tracking-wider text-muted-foreground">November spend</div>
-                  <div className="font-display text-3xl text-foreground">$2,418.50</div>
+                  <div className="font-display text-3xl text-foreground">₹2,41,850</div>
                 </div>
                 <div className="rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary-deep">−12% vs Oct</div>
               </div>
