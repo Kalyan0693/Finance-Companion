@@ -1,4 +1,4 @@
-export const formatCurrency = (amount: number | string, code = "USD") => {
+export const formatCurrency = (amount: number | string, code = "INR") => {
   const n = typeof amount === "string" ? parseFloat(amount) : amount;
   try {
     return new Intl.NumberFormat(undefined, { style: "currency", currency: code }).format(n || 0);
